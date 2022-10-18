@@ -1,20 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+# from django.contrib.auth.decorators import login_required
+# from django.core.paginator import Paginator
+# from django.contrib.auth.models import User
 from django.db.models import Q
+
 from .forms import UserRegisterForm
 from .models import Category, Message as C_Message, Product
-from django.contrib.auth.models import User
-from .serializers import MyTokenSerializer
-
-from django.http import  HttpResponse,JsonResponse
-from rest_framework.views import APIView
-from rest_framework.views import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt import authentication
-from rest_framework_simplejwt.views import TokenViewBase
-from rest_framework import status, viewsets
-from rest_framework import permissions
-from rest_framework_simplejwt.views import TokenViewBase
 
 
 def index(request):
@@ -113,38 +105,3 @@ def contact(request):
                          f"{name}'s message was submitted successfully！")
 
     return render(request, "login/contact.html", context)
-
-
-def ListShops(requests):
-    return HttpResponse("this is shop list")
-
-
-class LoginViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = MyTokenSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except Exception as e:
-            raise ValueError(f'Validation failed:{e}')
-
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
-
-
-
-
-# class LoginView(TokenViewBase):
-#     serializer_class = MyTokenSerializer
-#
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         try:
-#             serializer.is_valid(raise_exception=True)
-#         except Exception as e:
-#             raise ValueError(f'Validation failed:{e}')
-#
-#         return Response(serializer.validated_data, status=status.HTTP_200_OK)
-

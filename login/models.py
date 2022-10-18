@@ -9,26 +9,26 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    product_name = models.CharField(max_length=500)
-    img = models.CharField(max_length=1000, default='')
-    sn = models.CharField(max_length=50, default='')
-    defects = models.CharField(max_length=2000, default='')
-    hazards = models.CharField(max_length=2000, default='')
-    consumers = models.CharField(max_length=2000, default='')
-    supplier = models.CharField(max_length=2000, default='')
-    traders = models.CharField(max_length=2000, default='')
-    sold_venues = models.CharField(max_length=1000, default='')
-    avaiable_sale_date = models.CharField(max_length=1000, default='')
-    content = models.CharField(max_length=2000, default='')
-    published_date = models.CharField(max_length=50, default='')
-    # created_date = models.DateTimeField(auto_now=True)
-    category = models.CharField(max_length=50, default='')
+    product_name = models.CharField(max_length=100)
+    img = models.CharField(max_length=200)
+    sn = models.CharField(max_length=20)
+    defects = models.CharField(max_length=100)
+    hazards = models.CharField(max_length=100)
+    consumers = models.CharField(max_length=100)
+    supplier = models.CharField(max_length=100)
+    traders = models.CharField(max_length=100)
+    sold_venues = models.CharField(max_length=100)
+    avaiable_sale_date = models.CharField(max_length=100)
+    content = models.CharField(max_length=200)
+
+    created_date = models.DateTimeField(auto_now=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ["category"]
+        ordering = ["-created_date"]
 
     def __repr__(self):
-        return f"{self.product_name} - {self.sn} - {self.category}"
+        return f"{self.product_name} - {self.sn} - {self.created_date}"
 
 
 class Message(models.Model):
