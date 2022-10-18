@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import datetime
 from pathlib import Path
 
+import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,7 +26,7 @@ SECRET_KEY = 'django-insecure-6x1rnxhh$qobx0(&-!&lungr*hw&72v(xv@#%=fyj*g@2-98j$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['67.205.158.200']
 
 # Application definition
 
@@ -177,6 +179,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "static"
 
 MEDIA_ROOT = BASE_DIR / "media"
 
