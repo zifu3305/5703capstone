@@ -7,25 +7,41 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Capstone.settings")
 
 django.setup()
 
-df = pd.read_excel("./product.xlsx")
+df = pd.read_excel("./products_2.xlsx")
+
+cat_names = [
+    'Babies and kids',
+    'Home and living',
+    'Health and lifestyle',
+    'Electronics and technology',
+    'Outdoor',
+    'Clothing and accessories',
+    'Transport',
+    'Food and groceries',
+    'Industrial,  business and building',
+    'Agricultural and veterinary',
+    'Chemicals',
+    'Gas',
+]
+
+com_names = [
+    "Children",
+    "Household",
+    "Healthy life & Beauty",
+    "Digital products",
+    "Adventure & Travel equipment",
+    "Clothing",
+    "Transportation",
+    "Food & Drinks",
+    "Industrial products & Office",
+    "Agriculture and Livestock",
+    "Medicinal & Chemical",
+    "Other",
+]
 
 
 def category_sql():
 
-    com_names = [
-        "Children",
-        "Household",
-        "Healthy life & Beauty",
-        "Digital products,"
-        "Adventure & Travel equipment",
-        "Clothing",
-        "Transportation",
-        "Food & Drinks",
-        "Industrial products & Office",
-        "Agriculture and Livestock",
-        "Medicinal & Chemical",
-        "Other",
-    ]
     for idx, name in enumerate(com_names, start=1):
         Category.objects.create(id=idx, title=name)
     print("Category to sql down!")
@@ -33,7 +49,8 @@ def category_sql():
 
 def product_sql():
     for _, row in df.iterrows():
-        cat = row['Product category']
+        cat = row['Product category'].strip()
+        cat = com_names[cat_names.index(cat)]
         product_name = row["Product name"]
         img = row["Picture address"]
         sn = row["PRA number"]
@@ -57,6 +74,7 @@ def product_sql():
                                traders=traders,
                                sold_venues=sold_venues,
                                avaiable_sale_date=avaiable_sale_date,
+                               category_name=cat,
                                category_id=category.id)
     print("Product导入成功!")
 

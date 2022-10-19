@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-import os
+
 from pathlib import Path
+import datetime
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,9 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6x1rnxhh$qobx0(&-!&lungr*hw&72v(xv@#%=fyj*g@2-98j$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
-ALLOWED_HOSTS = ['104.248.52.49']
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -38,6 +41,9 @@ INSTALLED_APPS = [
     "crispy_tailwind",
     "login.apps.LoginConfig",
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
@@ -79,7 +85,7 @@ WSGI_APPLICATION = 'Capstone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 # pip install mysqlclient
@@ -115,6 +121,28 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        # The default permission is to authenticate the user
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # Use rest_framework_simplejwt to verify the identity
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.SessionAuthentication',
+        # 'rest_framework_simplejwt.authentication.BasicAuthentication',
+    ],
+}
+# Set the validity of the token
+SIMPLE_JWT ={
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=10),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -132,10 +160,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-#MEDIA_ROOT = BASE_DIR / "media"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / "media"
 
 MEDIA_URL = "/media/"
 

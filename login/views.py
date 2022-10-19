@@ -1,21 +1,41 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.models import User
 # from django.contrib.auth.decorators import login_required
 # from django.core.paginator import Paginator
 # from django.contrib.auth.models import User
 from django.db.models import Q
-
+from .serializers import MyTokenSerializer
+from django.http import HttpResponse
+from rest_framework.views import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status, viewsets
 from .forms import UserRegisterForm
 from .models import Category, Message as C_Message, Product
+
+cat_names = [
+    "Children",
+    "Household",
+    "Healthy life & Beauty",
+    "Digital products",
+    "Adventure & Travel equipment",
+    "Clothing",
+    "Transportation",
+    "Food & Drinks",
+    "Industrial products & Office",
+    "Agriculture and Livestock",
+    "Medicinal & Chemical",
+    "Other",
+]
 
 
 def index(request):
     context = {}
-    for cat in Category.objects.all():
-        print(cat.id, cat.title)
+    # for cat in Category.objects.all():
+    #     print(cat.id, cat.title)
     products = Product.objects.all()[:5]
     context['products'] = products
-    print(products)
+    # print(products)
     return render(request, "login/index.html", context)
 
 
@@ -24,10 +44,28 @@ def about(request):
     return render(request, "login/about.html", context)
 
 
+def law_1(request):
+    context = {}
+    return render(request, "login/law_1.html", context)
+
+
+def law_2(request):
+    context = {}
+    return render(request, "login/law_2.html", context)
+
+
+def law_3(request):
+    context = {}
+    return render(request, "login/law_3.html", context)
+
+
 def category(request, cid):
     context = {}
-    category = get_object_or_404(Category, id=cid)
-    products = category.product_set.all()
+    # category = get_object_or_404(Category, id=cid)
+    # products = category.product_set.all()
+    products = Product.objects.filter(
+        category_name__icontains=cat_names[int(cid)]).all()
+
     context['current'] = str(int(cid) - 1)
     context['products'] = products
 
@@ -105,3 +143,22 @@ def contact(request):
                          f"{name}'s message was submitted successfully！")
 
     return render(request, "login/contact.html", context)
+
+
+def ListShops(requests):
+    return HttpResponse("this is shop list")
+
+
+class LoginViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = MyTokenSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception as e:
+            raise ValueError(f'Validation failed:{e}')
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
